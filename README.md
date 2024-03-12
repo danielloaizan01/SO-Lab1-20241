@@ -1,4 +1,7 @@
-
+# Integrantes
+Daniel Loaiza Noreña
+Anderson Saldarriaga Castaño
+Joan Manuel Muñoz Monroy
 # Práctica 1 de laboratorio - Introducción al lenguaje C
 
 > ## Objetivos
