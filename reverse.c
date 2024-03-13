@@ -55,3 +55,19 @@ void readAndPrintLines() {
     // Imprimir las líneas en orden inverso
     printReversedLines(text, lineCount);
 }
+void readLinesFromFileAndPrint(FILE *file) {
+    char line[MAX_LINE_LENGTH][MAX_LINE_LENGTH];
+    int numLines = 0;
+
+    // Leer líneas del archivo
+    while (fgets(line[numLines], MAX_LINE_LENGTH, file) != NULL) {
+        numLines++;
+    }
+
+    // Imprimir líneas en orden inverso
+    for (int i = numLines - 1; i >= 0; i--) {
+        printf("%s", line[i]);
+    }
+
+    fclose(file);
+}
