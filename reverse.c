@@ -71,3 +71,61 @@ void readLinesFromFileAndPrint(FILE *file) {
 
     fclose(file);
 }
+
+void reverseAndWriteToFile(FILE **input, FILE **output) {
+    
+    char text[MAX_LINE_LENGTH][MAX_LINE_LENGTH];
+    int lineCount = 0;
+
+    // Leer líneas del archivo de entrada
+    while (fgets(text[lineCount], MAX_LINE_LENGTH, *input) != NULL) {
+        lineCount++;
+    }
+
+    // Escribir líneas al archivo de salida en orden inverso
+    for (int i = lineCount - 1; i >= 0; i--) {
+        fputs(text[i], *output);
+    }
+
+    fclose(*input);
+    fclose(*output);
+}
+
+int main(int argc, char *argv[]) {
+    FILE *inputFile = NULL;
+    FILE *outputFile = NULL;
+
+    switch (argc) {
+        case 1:
+            // No se proporcionaron argumentos de línea de comandos (Test 2)
+            readAndPrintLinesFromConsole();
+            break;
+        case 2:
+            // Se proporcionó solo un argumento de línea de comandos (Test 3)
+            openAndReadFile(argv[1], &inputFile);
+            readAndPrintLinesFromFile(&inputFile);
+            break;
+        case 3:
+            // El archivo de entrada tiene el mismo nombre que el archivo de salida (Test 4)
+            if (strcmp(argv[1], argv[2]) == 0) {
+                fprintf(stderr, "Error: el archivo de entrada y salida deben ser diferentes\n");
+                exit(EXIT_FAILURE);
+            } else {
+                // Se proporcionaron dos argumentos de línea de comandos (Test 5)
+                openAndReadFile(argv[1], &inputFile);
+                openFile(argv[2], &outputFile);
+
+                // Verificar si el archivo de entrada y el archivo de salida son el mismo archivo (Test 6)
+                checkIfSameFile(argv[1], argv[2]);
+
+                // Revertir el archivo y escribirlo (Test 7)
+                reverseFileAndWrite(&inputFile, &outputFile);
+            }
+            break;
+        default:
+            // Demasiados argumentos de línea de comandos (Test 1)
+            tooManyArguments();            
+    }
+
+    return 0;
+}
