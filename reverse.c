@@ -37,10 +37,21 @@ void checkFile(char *file1, char *file2) {
         exit(EXIT_FAILURE);
     } 
 }
-void reverseLines(char lines[][MAX_LINE_LENGTH], 
-int numLines) {
+void reverseLines(char lines[][MAX_LINE_LENGTH],int numLines) {
     // Imprimir lineas al revés 
     for (int x = numLines - 1; x >= 0; x--) {
         printf("%s", lines[x]);
     }
+}
+void readAndPrintLines() {
+    char text[MAX_LINE_LENGTH][MAX_LINE_LENGTH];
+    int lineCount = 0;
+
+    // Leer líneas desde la entrada estándar
+    while (fgets(text[lineCount], MAX_LINE_LENGTH, stdin) != NULL) {
+        lineCount++;
+    }
+
+    // Imprimir las líneas en orden inverso
+    printReversedLines(text, lineCount);
 }
