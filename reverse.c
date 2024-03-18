@@ -41,6 +41,7 @@ void hardlinkTest(char *argv[]) {
         exit(1);
     }
 }
+
 void checkFile(char *file1, char *file2) {
     struct stat file1_stat, file2_stat;
     // Obtener información del primer archivo
@@ -60,8 +61,8 @@ void checkFile(char *file1, char *file2) {
     } 
 }
 
-void reverseLines(char lines[][MAX_LINE_LENGTH],int numLines) {
-    // Imprimir lineas al revés 
+void reverseLines(char lines[][MAX_LINE_LENGTH], int numLines) {
+    // Imprimir líneas al revés 
     for (int x = numLines - 1; x >= 0; x--) {
         printf("%s", lines[x]);
     }
@@ -97,22 +98,22 @@ void readLinesFromFileAndPrint(FILE *file) {
     fclose(file);
 }
 
-void reverseAndWriteToFile(FILE **input, FILE **output) {
+void reverseAndWriteToFile(FILE *input, FILE *output) {
     char text[MAX_LINE_LENGTH][MAX_LINE_LENGTH];
     int lineCount = 0;
 
     // Leer líneas del archivo de entrada
-    while (fgets(text[lineCount], MAX_LINE_LENGTH, *input) != NULL) {
+    while (fgets(text[lineCount], MAX_LINE_LENGTH, input) != NULL) {
         lineCount++;
     }
 
     // Escribir líneas al archivo de salida en orden inverso
     for (int i = lineCount - 1; i >= 0; i--) {
-        fputs(text[i], *output);
+        fputs(text[i], output);
     }
 
-    fclose(*input);
-    fclose(*output);
+    fclose(input);
+    fclose(output);
 }
 
 int main(int argc, char *argv[]) {
@@ -138,14 +139,14 @@ int main(int argc, char *argv[]) {
                 openFile(argv[1], &inputFile);
                 openFile(argv[2], &outputFile);
 
-		// Se proporcionaron dos argumentos de línea de comandos (Test 5)
-		hardlinkTest(argv);
+                // Se proporcionaron dos argumentos de línea de comandos (Test 5)
+                hardlinkTest(argv);
 
                 // Verificar si el archivo de entrada y el archivo de salida son el mismo archivo (Test 6)
                 checkFile(argv[1], argv[2]);
 
                 // Revertir el archivo y escribirlo (Test 7)
-                reverseAndWriteToFile(&inputFile, &outputFile);
+                reverseAndWriteToFile(inputFile, outputFile);
             }
             break;
         default:
