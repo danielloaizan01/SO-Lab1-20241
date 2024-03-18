@@ -19,6 +19,28 @@ void openFile(char *file_name, FILE **file) {
         exit(1);
     }
 }
+
+void hardlinkTest(char *argv[]) {
+    struct stat stat_in, stat_out;
+
+    // Obtener información del archivo de entrada
+    if (stat(argv[1], &stat_in) == -1) {
+        fprintf(stderr, "Error trying to get inputfile info'\n");
+        exit(1);
+    }
+
+    // Obtener información del archivo de salida
+    if (stat(argv[2], &stat_out) == -1) {
+        fprintf(stderr, "Error trying to get outputfile info'\n");
+        exit(1);
+    }
+
+    // Comparar números de dispositivo e inodo
+    if (stat_in.st_dev == stat_out.st_dev && stat_in.st_ino == stat_out.st_ino) {
+        fprintf(stderr, "reverse: input and output file must differ\n");        
+        exit(1);
+    }
+}
 void checkFile(char *file1, char *file2) {
     struct stat file1_stat, file2_stat;
     // Obtener información del primer archivo
@@ -37,12 +59,14 @@ void checkFile(char *file1, char *file2) {
         exit(EXIT_FAILURE);
     } 
 }
+
 void reverseLines(char lines[][MAX_LINE_LENGTH],int numLines) {
     // Imprimir lineas al revés 
     for (int x = numLines - 1; x >= 0; x--) {
         printf("%s", lines[x]);
     }
 }
+
 void readAndPrintLines() {
     char text[MAX_LINE_LENGTH][MAX_LINE_LENGTH];
     int lineCount = 0;
@@ -53,8 +77,9 @@ void readAndPrintLines() {
     }
 
     // Imprimir las líneas en orden inverso
-    printReversedLines(text, lineCount);
+    reverseLines(text, lineCount);
 }
+
 void readLinesFromFileAndPrint(FILE *file) {
     char line[MAX_LINE_LENGTH][MAX_LINE_LENGTH];
     int numLines = 0;
@@ -73,7 +98,6 @@ void readLinesFromFileAndPrint(FILE *file) {
 }
 
 void reverseAndWriteToFile(FILE **input, FILE **output) {
-    
     char text[MAX_LINE_LENGTH][MAX_LINE_LENGTH];
     int lineCount = 0;
 
@@ -98,28 +122,30 @@ int main(int argc, char *argv[]) {
     switch (argc) {
         case 1:
             // No se proporcionaron argumentos de línea de comandos (Test 2)
-            readAndPrintLinesFromConsole();
+            readAndPrintLines();
             break;
         case 2:
             // Se proporcionó solo un argumento de línea de comandos (Test 3)
-            openAndReadFile(argv[1], &inputFile);
-            readAndPrintLinesFromFile(&inputFile);
+            openFile(argv[1], &inputFile);
+            readLinesFromFileAndPrint(inputFile);
             break;
         case 3:
             // El archivo de entrada tiene el mismo nombre que el archivo de salida (Test 4)
             if (strcmp(argv[1], argv[2]) == 0) {
-                fprintf(stderr, "Error: el archivo de entrada y salida deben ser diferentes\n");
+                fprintf(stderr, "reverse: input and output file must differ\n");
                 exit(EXIT_FAILURE);
             } else {
-                // Se proporcionaron dos argumentos de línea de comandos (Test 5)
-                openAndReadFile(argv[1], &inputFile);
+                openFile(argv[1], &inputFile);
                 openFile(argv[2], &outputFile);
 
+		// Se proporcionaron dos argumentos de línea de comandos (Test 5)
+		hardlinkTest(argv);
+
                 // Verificar si el archivo de entrada y el archivo de salida son el mismo archivo (Test 6)
-                checkIfSameFile(argv[1], argv[2]);
+                checkFile(argv[1], argv[2]);
 
                 // Revertir el archivo y escribirlo (Test 7)
-                reverseFileAndWrite(&inputFile, &outputFile);
+                reverseAndWriteToFile(&inputFile, &outputFile);
             }
             break;
         default:
